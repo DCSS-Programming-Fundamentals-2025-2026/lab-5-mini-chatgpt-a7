@@ -1,12 +1,18 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using Configuration.LabMiniChatGPT_A7;
 
 namespace LabMiniChatGPT_A7;
 
 public class TinyNNWeights
 {
+    [JsonPropertyName("embeddings")]
     public float[][] Embeddings { get; set; }
+    
+    [JsonPropertyName("outputWeights")]
     public float[][] OutputWeights { get; set; }
+    
+    [JsonPropertyName("outputBias")]
     public float[] OutputBias { get; set; }
 
     private readonly float minRange = -0.1f;
