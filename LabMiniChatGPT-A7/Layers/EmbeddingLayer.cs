@@ -1,4 +1,5 @@
-using Configuration.LabMiniChatGPT_A7;
+using LabMiniChatGPT_A7.Configuration;
+using LabMiniChatGPT_A7.State;
 
 namespace LabMiniChatGPT_A7.Layers;
 

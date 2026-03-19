@@ -1,8 +1,7 @@
-namespace Configuration.LabMiniChatGPT_A7;
+namespace LabMiniChatGPT_A7.Configuration;
 
-public record TinyNNConfig()
-{
-    public int VocabSize { get; init; }
-    public int EmbeddingSize { get; init; } = 32;
-    public int ContextSize { get; init; } = 8;
-}
+public record TinyNNConfig(
+    int VocabSize,
+    int EmbeddingSize = 32,
+    int ContextSize = 9
+);

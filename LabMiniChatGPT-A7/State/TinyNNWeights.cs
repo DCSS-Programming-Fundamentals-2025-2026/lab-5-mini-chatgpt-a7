@@ -1,9 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-using Configuration.LabMiniChatGPT_A7;
+using LabMiniChatGPT_A7.Configuration;
 
-namespace LabMiniChatGPT_A7;
-
+namespace LabMiniChatGPT_A7.State;
 public class TinyNNWeights
 {
     [JsonPropertyName("embeddings")]
