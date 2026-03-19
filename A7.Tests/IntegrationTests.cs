@@ -1,5 +1,6 @@
 using LabMiniChatGPT_A7;
 using LabMiniChatGPT_A7.Configuration;
+using LabMiniChatGPT_A7.Factories;
 using LabMiniChatGPT_A7.FakeMathOps;
 using LabMiniChatGPT_A7.Layers;
 using LabMiniChatGPT_A7.State;
@@ -29,5 +30,26 @@ public class IntegrationTests
             Assert.That(loss, Is.EqualTo(0.99f));
             Assert.That(weights.OutputWeights[0][0], Is.Not.EqualTo(initialWeight));
         });
+    }
+    
+    [Test]
+    public void Checkpoint_RoundTrip_RestoresModelFunctionality()
+    {
+        var config = new TinyNNConfig(VocabSize: 5, EmbeddingSize: 4, ContextSize: 3);
+        var weights = new TinyNNWeights(config);
+        var fakeMath = new FakeMathOps();
+        var originalModel = new TinyNNModel(config, weights, fakeMath);
+    
+        int[] context = { 1, 2 };
+        var originalLogits = originalModel.NextTokenScores(context);
+
+        var payload = originalModel.GetPayloadForCheckpoint();
+    
+        var factory = new TinyNNModelFactory();
+        var restoredModel = new TinyNNModel(config, (TinyNNWeights)payload, fakeMath);
+
+        var restoredLogits = restoredModel.NextTokenScores(context);
+
+        Assert.That(restoredLogits, Is.EqualTo(originalLogits));
     }
 }

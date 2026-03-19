@@ -1,4 +1,6 @@
+using LabMiniChatGPT_A7;
 using LabMiniChatGPT_A7.Configuration;
+using LabMiniChatGPT_A7.FakeMathOps;
 using LabMiniChatGPT_A7.Layers;
 using LabMiniChatGPT_A7.State;
 
@@ -57,5 +59,34 @@ public class Tests
             Assert.That(weights.OutputBias[0], Is.Not.EqualTo(initialBias0));
             Assert.That(weights.OutputWeights[0][0], Is.Not.EqualTo(initialWeight00));
         });
+    }
+    
+    [Test]
+    public void NextTokenScores_ContextLongerThanLimit_SlicesCorrectly()
+    {
+        var config = new TinyNNConfig(10,  4, 2); 
+        var weights = new TinyNNWeights(config);
+        var fakeMath = new FakeMathOps();
+        var model = new TinyNNModel(config, weights, fakeMath);
+
+        int[] longContext = { 1, 2, 3, 4, 5 }; 
+        int[] shortTail = { 4, 5 };            
+        
+        var longLogits = model.NextTokenScores(longContext);
+        var shortLogits = model.NextTokenScores(shortTail);
+
+        
+        Assert.That(longLogits, Is.EqualTo(shortLogits));
+    }
+    
+    [Test]
+    public void NextTokenScores_EmptyContext_DoesNotCrash()
+    {
+        var config = new TinyNNConfig(10, 4, 3);
+        var weights = new TinyNNWeights(config);
+        var fakeMath = new FakeMathOps();
+        var model = new TinyNNModel(config, weights, fakeMath);
+
+        Assert.DoesNotThrow(() => model.NextTokenScores(Array.Empty<int>()));
     }
 }
