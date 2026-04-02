@@ -1,8 +1,9 @@
+using System.Text.Json;
 using LabMiniChatGPT_A7;
 using LabMiniChatGPT_A7.Configuration;
 using LabMiniChatGPT_A7.Factories;
 using LabMiniChatGPT_A7.FakeMathOps;
-using LabMiniChatGPT_A7.Layers;
+
 using LabMiniChatGPT_A7.State;
 
 namespace A7.Tests;
@@ -33,7 +34,7 @@ public class IntegrationTests
     }
     
     [Test]
-    public void Checkpoint_RoundTrip_RestoresModelFunctionality()
+        public void Checkpoint_RoundTrip_RestoresModelFunctionality()
     {
         var config = new TinyNNConfig(VocabSize: 5, EmbeddingSize: 4, ContextSize: 3);
         var weights = new TinyNNWeights(config);
@@ -43,10 +44,15 @@ public class IntegrationTests
         int[] context = { 1, 2 };
         var originalLogits = originalModel.NextTokenScores(context);
 
-        var payload = originalModel.GetPayloadForCheckpoint();
+        var payloadObj = originalModel.ToPayload();
+    
+        string jsonString = JsonSerializer.Serialize(payloadObj);
+
+        using var jsonDocument = JsonDocument.Parse(jsonString);
+        var rootElement = jsonDocument.RootElement;
     
         var factory = new TinyNNModelFactory();
-        var restoredModel = new TinyNNModel(config, (TinyNNWeights)payload, fakeMath);
+        var restoredModel = factory.FromPayload(rootElement, config.VocabSize, fakeMath);
 
         var restoredLogits = restoredModel.NextTokenScores(context);
 

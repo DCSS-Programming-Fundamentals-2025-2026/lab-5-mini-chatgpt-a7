@@ -17,15 +17,18 @@ public class TinyNNWeights
     private readonly float minRange = -0.1f;
     private readonly float maxRange = 0.1f;
 
+    [JsonConstructor]
+    public TinyNNWeights() { }
+    
     public TinyNNWeights(TinyNNConfig config)
     {
+        Random temp = new Random();
         Embeddings = new float[config.VocabSize][];
         for (int i = 0; i < config.VocabSize; i++)
         {
             Embeddings[i] = new float[config.EmbeddingSize];
             for (int j = 0; j < config.EmbeddingSize; j++)
             {
-                Random temp = new Random();
                 Embeddings[i][j] = (float)temp.NextDouble() * (maxRange - minRange) + minRange;
             }
         }
@@ -36,7 +39,6 @@ public class TinyNNWeights
             OutputWeights[i] = new float[config.VocabSize];
             for (int j = 0; j < config.VocabSize; j++)
             {
-                Random temp = new Random();
                 OutputWeights[i][j] = (float)temp.NextDouble() * (maxRange - minRange) + minRange;
             }
         }
@@ -44,7 +46,6 @@ public class TinyNNWeights
         OutputBias = new float[config.VocabSize];
         for (int i = 0; i < config.VocabSize; i++)
         {
-            Random temp = new Random();
             OutputBias[i] = (float)temp.NextDouble() * (maxRange - minRange) + minRange;
         }
     }

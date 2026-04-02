@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using LabMiniChatGPT_A7.Configuration;
 using LabMiniChatGPT_A7.DummyInterfaces;
 using LabMiniChatGPT_A7.Layers;
@@ -41,7 +42,7 @@ public class TinyNNModel  : ILanguageModel
         
         float[] dLogits = new float[_config.VocabSize];
 
-        for (int i = 0; i < _config.EmbeddingSize; i++)
+        for (int i = 0; i < _config.VocabSize; i++)
         {
             dLogits[i] = probs[i];
 
@@ -60,8 +61,13 @@ public class TinyNNModel  : ILanguageModel
         return loss;
     }
 
-    public object GetPayloadForCheckpoint()
+    public TinyNNPayload ToPayload()
     {
-        return _weights;
+        return new TinyNNPayload(_config, _weights);
     }
 }
+
+public record TinyNNPayload(
+    [property: JsonPropertyName("config")] TinyNNConfig Config, 
+    [property: JsonPropertyName("weights")] TinyNNWeights Weights
+);

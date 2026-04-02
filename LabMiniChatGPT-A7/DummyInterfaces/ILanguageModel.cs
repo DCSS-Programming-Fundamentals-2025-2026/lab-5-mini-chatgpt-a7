@@ -7,5 +7,5 @@ public interface ILanguageModel
     
     float[] NextTokenScores(ReadOnlySpan<int> context);
     float TrainStep(ReadOnlySpan<int> context, int target, float lr);
-    object GetPayloadForCheckpoint();
+    TinyNNPayload ToPayload();
 }
